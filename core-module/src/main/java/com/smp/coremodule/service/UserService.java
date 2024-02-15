@@ -37,9 +37,17 @@ public class UserService {
     public void deleteById( Long id ) {
         userRedisRepo.delete( id );
         User user = entityManager.getReference( User.class, id );
+        if( user == null ) {
+            logger.error( "User not found" );
+            throw new ObjectNotFoundException(" User not found ");
+        }
         userRepo.delete( user );
         logger.info(user.getName()+ " this user successfully deleted");
-        kafkaService.userInfoNotify( user.getName()+ " this user successfully deleted" );
+        try {
+            kafkaService.userInfoNotify(user.getName() + " this user successfully deleted");
+        } catch ( Exception ignored ){
+
+        }
     }
 
     @Transactional( readOnly = true )
@@ -90,7 +98,11 @@ public class UserService {
         userAdd( userDto );
 
         logger.info( "User info successfully updated" );
-        kafkaService.userInfoNotify( "User info successfully updated" );
+        try {
+            kafkaService.userInfoNotify("User info successfully updated");
+        } catch ( Exception ignored ){
+
+        }
         return userDto;
     }
 
@@ -109,7 +121,11 @@ public class UserService {
         User user = userAdd( userDto );
         userDto.setId( user.getId() );
         logger.info( "User info successfully added" );
-        kafkaService.userInfoNotify( "User info successfully added" );
+        try {
+            kafkaService.userInfoNotify("User info successfully added");
+        } catch ( Exception ignored ){
+
+        }
         return userDto;
     }
 
