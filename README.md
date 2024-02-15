@@ -19,7 +19,7 @@ command: docker-compose up -d
 
 # 4. test ( Core-module, notification-module )
 -----------------
-userd post-man
+use post-man
 
 #ex :
 ---------------
