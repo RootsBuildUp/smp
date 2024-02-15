@@ -39,8 +39,7 @@ services:
       - 5432:5432
   core-module:
     image: core-module
-    build: .\core-module
-    container_name: core-module
+    build: ./core-module
     links:
       - redis-server
     environment:
@@ -61,9 +60,7 @@ services:
       - db
   notification-module:
     image: notification-module
-    build:
-      context: .\notification-module
-    container_name: notification-module
+    build: ./notification-module
     ports:
       - 8082:8082
     depends_on:
