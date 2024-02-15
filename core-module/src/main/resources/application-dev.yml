@@ -1,0 +1,32 @@
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+  data:
+    redis:
+      hostname: localhost
+      port: 6379
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/smp?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&characterSetResults=UTF-8
+    username: postgres
+    password: fci roll 484104
+    driver-class-name: org.postgresql.Driver
+
+  datasource-read:
+    url: jdbc:postgresql://localhost:5432/smp?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&characterSetResults=UTF-8
+    username: postgres
+    password: fci roll 484104
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      javax.persistence.validation.mode: none
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.format_sql: false
