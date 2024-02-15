@@ -8,6 +8,9 @@ command : mvn clean deploy -DskipTests
 # 2. Docker image Build command ( Core-module, notification-module )
 -----------------
 command: docker build -t [tag-name] .
+ex:
+docker build -t Core-module .
+docker build -t notification-module .
 
 # 3. Docker-compose run command ( Core-module, notification-module )
 -----------------
