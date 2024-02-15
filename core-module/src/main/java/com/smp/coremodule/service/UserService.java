@@ -9,6 +9,8 @@ import com.smp.coremodule.repo.UserRepo;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserService {
 
+    Logger logger = LoggerFactory.getLogger(UserService.class);
+
     private final KafkaService kafkaService;
     private final UserRedisRepo userRedisRepo;
     private final UserRepo userRepo;
@@ -34,6 +38,7 @@ public class UserService {
         userRedisRepo.delete( id );
         User user = entityManager.getReference( User.class, id );
         userRepo.delete( user );
+        logger.info(user.getName()+ " this user successfully deleted");
         kafkaService.userInfoNotify( user.getName()+ " this user successfully deleted" );
     }
 
@@ -55,8 +60,10 @@ public class UserService {
         UserRedis userRedis = userRedisRepo.findById( id );
         if( userRedis == null ) {
             Optional<User> user = userRepo.findById( id );
-            if( user.isEmpty() )
+            if( user.isEmpty() ) {
+                logger.error( "User not found" );
                 throw new ObjectNotFoundException(" User not found ");
+            }
             else {
                 getItem( user, userDto );
                 userRedis = new UserRedis();
@@ -74,12 +81,15 @@ public class UserService {
     public UserDto update( Long id, UserDto userDto ) {
 
         UserRedis user = userRedisRepo.findById( id );
-        if( user == null )
-            throw new ObjectNotFoundException( " User not found " );
-
+        if( user == null ) {
+            logger.error( "User not found" );
+            throw new ObjectNotFoundException(" User not found ");
+        }
         userDto.setId( id );
 
         userAdd( userDto );
+
+        logger.info( "User info successfully updated" );
         kafkaService.userInfoNotify( "User info successfully updated" );
         return userDto;
     }
@@ -98,6 +108,7 @@ public class UserService {
     public UserDto crate(UserDto userDto) {
         User user = userAdd( userDto );
         userDto.setId( user.getId() );
+        logger.info( "User info successfully added" );
         kafkaService.userInfoNotify( "User info successfully added" );
         return userDto;
     }
